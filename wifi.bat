@@ -16,11 +16,30 @@ REM 你可以创建，启动，停止笔记本的虚拟WIFI热点
 REM 本工具需要WIFI网卡支持虚拟AP才能使用，目前大部分WIFI芯片都支持
 REM 如果要共享上网，请进入网络控制面板把能够联网的网卡，共享给虚拟WIFI即可
 
+set result=0
+if "%1"=="/?" set /a result=1
+if "%1"=="help" set /a result = result "|" 1
+if "%1"=="-help" set /a result = result "|" 1
+if %result% equ 1 (
+  echo WIFI sharing tools v1.1
+  echo Usage
+  echo    wifi [start ^| stop ^| help]
+  exit /b 0
+)
+
 net session >nul 2>&1
 if not "%errorLevel%" == "0" (
   echo Oops: This tools must run with administrator permissions!
+  echo it will popup the UAC dialog, please click [Yes] to continue.
+  echo Set UAC = CreateObject^("Shell.Application"^) > "%temp%\getadmin.vbs"
+  echo UAC.ShellExecute "%~s0", "%*", "", "runas", 1 >> "%temp%\getadmin.vbs"
+
+  "%temp%\getadmin.vbs"
   exit /b 2
 )
+
+if "%1"=="start" goto start
+if "%1"=="stop" goto stop
 
 set tag_bearer=bearer network & set tag_yes=yes
 
@@ -122,3 +141,4 @@ set _password=
 set mid=
 set tag_bearer=
 set tag_yes=
+if exist "%temp%\getadmin.vbs" ( del "%temp%\getadmin.vbs" )
