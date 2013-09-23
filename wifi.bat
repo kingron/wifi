@@ -61,7 +61,8 @@ echo ©§ 2. Start virtual WLAN    ©§
 echo ©§ 3. Stop virtual WLAN     ©§
 echo ©§ 4. View WLAN connections ©§
 echo ©§ 5. Change WLAN password  ©§
-echo ©§ 6. Exit                  ©§
+echo ©§ 6. Share Connection(ICS) ©§
+echo ©§ 7. Exit                  ©§
 echo ©»©¥©¥©¥©¥©¥©¥©¥©¥©¥©¥©¥©¥©¥©¿
 echo.
 set /p mid=Please select the number and press ^<ENTER^>:
@@ -70,7 +71,8 @@ if "%mid%"=="2" goto start
 if "%mid%"=="3" goto stop
 if "%mid%"=="4" goto view
 if "%mid%"=="5" goto password
-if "%mid%"=="6" goto end
+if "%mid%"=="6" goto share
+if "%mid%"=="7" goto end
 echo Error: Invalid command, please try again.
 goto menu
 
@@ -133,6 +135,10 @@ goto end
 
 :view
 netsh wlan show hostednetwork
+goto end
+
+:share
+cscript /nologo %~dp0\share.vbs
 goto end
 
 :end
