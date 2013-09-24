@@ -2,6 +2,7 @@
 @title WIFI Sharing Tools
 
 REM WIFI Sharing Tools for Windows
+REM Copyright Kingron<kingron@163.com>
 REM Only test for Windows 7(English version, Simplified Chinese version)
 REM This tools can create virtual WIFI access point, start and stop virtual WLAN,
 REM The virtual WLAN AP can be used for any mobile device, smart phone and etc.
@@ -12,11 +13,6 @@ REM network and internet\network connections"
 REM !WARNNING!
 REM    You MUST run this batch with administrator permissions
 
-REM 这是一个设置笔记本WIFI热点的工具
-REM 你可以创建，启动，停止笔记本的虚拟WIFI热点
-REM 本工具需要WIFI网卡支持虚拟AP才能使用，目前大部分WIFI芯片都支持
-REM 如果要共享上网，请进入网络控制面板把能够联网的网卡，共享给虚拟WIFI即可
-
 set help=0
 if "%1"=="/?" set help=1
 if "%1"=="help" set help=1
@@ -24,7 +20,7 @@ if "%1"=="-help" set help=1
 if %help% equ 1 (
   echo WIFI sharing tools v1.1
   echo Usage
-  echo    wifi [start ^| stop ^| help]
+  echo    %~n0 [create ^| start ^| stop ^| view ^| password ^| help]
   exit /b 0
 )
 
