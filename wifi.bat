@@ -2,6 +2,7 @@
 @title WIFI Sharing Tools
 
 REM WIFI Sharing Tools for Windows
+REM Only test for Windows 7(English version, Simplified Chinese version)
 REM This tools can create virtual WIFI access point, start and stop virtual WLAN,
 REM The virtual WLAN AP can be used for any mobile device, smart phone and etc.
 REM You WIFI adapter must support Ad-Hoc mode(For intel WLAN chipset, it means
@@ -16,11 +17,11 @@ REM 你可以创建，启动，停止笔记本的虚拟WIFI热点
 REM 本工具需要WIFI网卡支持虚拟AP才能使用，目前大部分WIFI芯片都支持
 REM 如果要共享上网，请进入网络控制面板把能够联网的网卡，共享给虚拟WIFI即可
 
-set result=0
-if "%1"=="/?" set /a result=1
-if "%1"=="help" set /a result = result "|" 1
-if "%1"=="-help" set /a result = result "|" 1
-if %result% equ 1 (
+set help=0
+if "%1"=="/?" set help=1
+if "%1"=="help" set help=1
+if "%1"=="-help" set help=1
+if %help% equ 1 (
   echo WIFI sharing tools v1.1
   echo Usage
   echo    wifi [start ^| stop ^| help]
@@ -38,18 +39,12 @@ if not "%errorLevel%" == "0" (
   exit /b 2
 )
 
+if "%1"=="create" goto create
 if "%1"=="start" goto start
 if "%1"=="stop" goto stop
-
-set tag_bearer=bearer network & set tag_yes=yes
-
-for /f "usebackq tokens=2 delims=:" %%a in (`mode con cp`) do set codepage=%%a
-for /f "tokens=* delims= " %%a in ("%codepage%") do set codepage=%%a
-
-REM if you want to use this for other language, you should change below tags.
-REM CP 936 = Chinese, 437 = English
-if "%codepage%"=="936" set tag_bearer=支持的承载网络 & set tag_yes=是
-if "%codepage%"=="437" set tag_bearer=bearer network & set tag_yes=yes
+if "%1"=="view" goto view
+if "%1"=="password" goto password
+if "%1"=="share" goto share
 
 :menu
 echo.
@@ -82,15 +77,23 @@ echo NOTE:
 echo The "create virtual WLAN" command only run once if success, you needn't run it
 echo again unless you want to change the SSID or password!
 echo.
+
+REM if you want to use this for other language, you should change below tags.
+REM CP 936 = Chinese, 437 = English
 echo Check your WIFI adapter...
-netsh wlan show drive | find "%tag_bearer%" | find "%tag_yes%"
-if %errorlevel%==0 (
+set supported=0
+netsh wlan show drive | find "支持的承载网络" | find "是"
+if %errorlevel%==0 set supported=1
+netsh wlan show drive | find "Hosted network supported" | find "Yes"
+if %errorlevel%==0 set supported=1
+if %supported% equ 1 (
   echo Congratulation! You WIFI adapter support Ad-Hoc mode.
   echo Please follow step to finish the setup.
 ) else (
   echo Oops! You WIFI adapter can't support Ad-Hoc mode^(hostednetwork^).
   exit /b 1
 )
+
 if "%_name%"=="" set _name=wlan
 set /p _name=Please input the virtual AP name(default: %_name%):
 set /p _password=Please input the password^(required, length: 8~63^):
@@ -145,6 +148,4 @@ goto end
 set _name=
 set _password=
 set mid=
-set tag_bearer=
-set tag_yes=
 if exist "%temp%\getadmin.vbs" ( del "%temp%\getadmin.vbs" )
