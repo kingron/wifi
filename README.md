@@ -15,3 +15,4 @@ Usage:
 ```
 powershell -file wifi1.ps1 AP_Name AP_Password
 ```
+![image](https://github.com/user-attachments/assets/a49e7f44-26bf-4115-beb6-adf42798b3b1)
